@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <!-- Time-stamp: "2014-05-15 20:00:48 antonj" -->
+    <meta charset="UTF-8" />
+    <meta name="author" content="Anton Johansson" />
+    <title>LUCK</title>
+    <style type="text/css" media="screen">
+      html, body {
+      margin: 0; padding: 0;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      }
+
+      .left, .right {
+      position: absolute;
+      top: 0;
+      width: 50%;
+      height: 100%;
+      }
+
+      .left {
+      left: 0;
+      background: #eee;
+      }
+
+      .right {
+      right: 0;
+      background: #ddd;
+      }
+      
+      
+      .container {
+      display: table;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      }
+      
+      .score {
+      position: relative;
+      display: table-cell;
+      width: 100%;
+      vertical-align: middle;
+      color: #333;
+      font-size: 10em;
+      pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="left"></div>
+      <div class="right"></div>
+      <div class="highscore">0</div>
+      <div class="score">0</div>
+    </div>
+    <script type="text/javascript">
+      var l = document.getElementsByClassName('score')[0];
+      
+      var left = document.getElementsByClassName('left')[0];
+      var right = document.getElementsByClassName('right')[0];
+      var score = 0;
+      
+      function prob() {
+      var are_you_lucky = Math.random(1) < 0.5;
+      score = are_you_lucky ? score + 1 : 0;
+      l.innerHTML = score;
+      console.log('score', score);
+      }
+
+      left.addEventListener('click', prob);
+      left.addEventListener('touchdown', prob);
+      right.addEventListener('mousedown', prob);
+      right.addEventListener('touchdown', prob);
+      
+    </script>
+  </body>
+</html>
