@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <!-- Time-stamp: "2014-05-15 20:00:48 antonj" -->
+    <!-- Time-stamp: "2014-05-16 00:13:58 antonj" -->
     <meta charset="UTF-8" />
     <meta name="author" content="Anton Johansson" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0" />
     <title>LUCK</title>
     <style type="text/css" media="screen">
       html, body {
@@ -11,6 +12,9 @@
       position: absolute;
       width: 100%;
       height: 100%;
+      color: rgba(20, 20, 20, 0.7);
+      font-family: sans-serif;
+      -webkit-font-smoothing: antialiased;
       }
 
       .left, .right {
@@ -18,6 +22,9 @@
       top: 0;
       width: 50%;
       height: 100%;
+      -webkit-transition: all 0.3s;
+      -moz-transition: all 0.3s;
+      transition: all 0.3s;
       }
 
       .left {
@@ -38,43 +45,139 @@
       text-align: center;
       }
       
-      .score {
+      .stats {
       position: relative;
       display: table-cell;
       width: 100%;
       vertical-align: middle;
-      color: #333;
-      font-size: 10em;
       pointer-events: none;
       }
+      
+      .score {
+      font-size: 10em;
+      font-family: serif;
+      }
+      
+      .highscore {
+      font-size: 1em;
+      }
+
+      .highscore .val {
+          font-weight: bold;
+      }
+
+      .highscore.new {
+          transition: all 0.5s;
+          -webkit-transform: rotate(360deg);
+                  transform: rotate(360deg);
+      }
+
+    .correct {
+        background: #77aa77;
+    }
+    .wrong {
+        background: #aa6666;
+    }
+
+    .what {
+        position: absolute;
+        font-size: 3em;
+        pointer-events: none;
+        -webkit-transform: translateX(-50%) translateY(-100%);
+                transform: translateX(-50%) translateY(-100%);
+        
+    }
+
+    .what.new {
+    }
     </style>
   </head>
   <body>
     <div class="container">
       <div class="left"></div>
       <div class="right"></div>
-      <div class="highscore">0</div>
-      <div class="score">0</div>
+      <div class="stats">
+        <div class="score">0</div>
+        <div class="highscore"></div>
+      </div>
     </div>
+    <div class="what"></div>
     <script type="text/javascript">
+      var has_touch = 'ontouchstart' in window;
       var l = document.getElementsByClassName('score')[0];
-      
+      var highscore = document.getElementsByClassName('highscore')[0];
+
+
       var left = document.getElementsByClassName('left')[0];
       var right = document.getElementsByClassName('right')[0];
+      var what = document.getElementsByClassName('what')[0];
       var score = 0;
-      
-      function prob() {
-      var are_you_lucky = Math.random(1) < 0.5;
-      score = are_you_lucky ? score + 1 : 0;
-      l.innerHTML = score;
-      console.log('score', score);
+      var max = localStorage['max-score'] >>> 0;
+      var high_anim_timer;
+
+      function newHigh(score) {
+          if (score < 2) return;
+          
+          highscore.innerHTML = score + ' ' + Math.pow(0.5, score)
+          localStorage['max-score'] = score;
+          highscore.innerHTML = 'record’s <span class="val">' + score + '</span> in a row'
+          + '<br />  it’s like you met <br /> the <span class="val">one</span> true love <br />amoung <span class="val">' + Math.pow(2, score) + '</span> random peeps';
+          max = score;
+          highscore.className = 'highscore new'
+          clearTimeout(high_anim_timer);
+          high_anim_timer = setTimeout(function () {
+              highscore.className = 'highscore'
+          }, 1000);
       }
 
-      left.addEventListener('click', prob);
-      left.addEventListener('touchdown', prob);
-      right.addEventListener('mousedown', prob);
-      right.addEventListener('touchdown', prob);
-      
+      newHigh(max);
+
+
+      var whatthe = ['yes', 'yes yes', 'omg', 'Ouw mi gawd', 'Magic!', 'Feeling lucky?', 'WHAAAT!!!', 'FFUUUUUUCKKK YOOOOOOO'];
+      function prob(e) {
+          left.className = 'left';
+          right.className = 'right';
+          var target = e.target;
+          var are_you_feeling_luck_is_it_you_choice = Math.random(1) < 0.5;
+          score = are_you_feeling_luck_is_it_you_choice ? score + 1 : 0;
+          l.innerHTML = score;
+          if (score > max) {
+              newHigh(score);
+          }
+          target.className += ' ' + (are_you_feeling_luck_is_it_you_choice ? 'correct' : 'wrong');
+          console.log('score', score);
+
+          var antonj = whatthe.length;
+          if (score > 0) {
+              var index = score - 0;
+              var msg = whatthe[index % antonj];
+              what.style.left = (has_touch ? e.changedTouches[0].pageX : e.x) + 'px';
+              what.style.top = (has_touch ? e.changedTouches[0].pageY : e.y) + 'px';
+              for (var i = 0, love = Math.floor(score / antonj); i < love; i++) {
+                  msg += ' ' + whatthe[Math.floor(Math.random() * antonj)];
+              }
+              what.innerHTML = msg;
+              what.className = 'what new'
+          } else {
+              what.innerHTML = " ";
+              what.className = 'what'
+          }
+      }
+
+      var events = {
+          handleEvent : function (event) {
+              switch (event.type) {
+              case 'mousedown':
+              case 'touchstart':
+                  prob(event)
+                  break;
+              }
+          }
+      }
+
+      var ev_start_name = has_touch ? 'touchstart' : 'mousedown';
+      left.addEventListener(ev_start_name, events, false);
+      right.addEventListener(ev_start_name, events, false);
     </script>
   </body>
 </html>
