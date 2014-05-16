@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <!-- Time-stamp: "2014-05-16 00:13:58 antonj" -->
+    <!-- Time-stamp: "2014-05-16 17:31:38 antonj" -->
     <meta charset="UTF-8" />
     <meta name="author" content="Anton Johansson" />
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0" />
@@ -115,16 +115,24 @@
       var max = localStorage['max-score'] >>> 0;
       var high_anim_timer;
 
-      function newHigh(score) {
-          if (score < 2) return;
+      function newHigh(score, promtHigh) {
+          if (score < 3) return;
+          
+          var highscoreName = localStorage['highscore-name'] || "Who are you?";
+          
+          if (promtHigh) {
+              var highscoreName = prompt("Mr[s] Luck", highscoreName);
+              localStorage['highscore-name'] = highscoreName;
+          }
           
           highscore.innerHTML = score + ' ' + Math.pow(0.5, score)
           localStorage['max-score'] = score;
-          highscore.innerHTML = 'record’s <span class="val">' + score + '</span> in a row'
+          highscore.innerHTML = 'Highestscore: <strong> ' + highscoreName + '</strong><br />record’s <span class="val">' + score + '</span> in a row'
           + '<br />  it’s like you met <br /> the <span class="val">one</span> true love <br />amoung <span class="val">' + Math.pow(2, score) + '</span> random peeps';
           max = score;
           highscore.className = 'highscore new'
           clearTimeout(high_anim_timer);
+          
           high_anim_timer = setTimeout(function () {
               highscore.className = 'highscore'
           }, 1000);
@@ -133,7 +141,13 @@
       newHigh(max);
 
 
-      var whatthe = ['yes', 'yes yes', 'omg', 'Ouw mi gawd', 'Magic!', 'Feeling lucky?', 'WHAAAT!!!', 'FFUUUUUUCKKK YOOOOOOO'];
+console.log(localStorage['highscore-name']);
+
+
+
+// TODO, statistik för varje siffra du kommer till
+      var whatthe = ['yes', 'yes yes', 'omg', 'A pigs orgasm lasts 30 minutes', 'Ouw mi gawd', 'Magic!', 'Feeling lucky?', 'WHAAAT!!!', 'FFUUUUUUCKKK YOOOOOOO'];
+      var clickTimer;
       function prob(e) {
           left.className = 'left';
           right.className = 'right';
@@ -142,10 +156,14 @@
           score = are_you_feeling_luck_is_it_you_choice ? score + 1 : 0;
           l.innerHTML = score;
           if (score > max) {
-              newHigh(score);
+              newHigh(score, true);
           }
           target.className += ' ' + (are_you_feeling_luck_is_it_you_choice ? 'correct' : 'wrong');
           console.log('score', score);
+          clearTimeout(clickTimer);
+          setTimeout(function() {
+              target.className = target.className.replace(/correct|wrong/g,'')
+          }, 200);
 
           var antonj = whatthe.length;
           if (score > 0) {
