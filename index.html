@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <!-- Time-stamp: "2014-05-17 03:55:51 antonj" -->
+    <!-- Time-stamp: "2014-05-17 19:56:42 antonj" -->
     <meta charset="UTF-8" />
     <meta name="author" content="Anton Johansson" />
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0" />
@@ -118,7 +118,9 @@
       function newHigh(score, promtHigh) {
           if (score < 3) return;
 
-          ga('send', 'event', 'highscore', score);
+          if (promtHigh && ga !== undefined) {
+              ga('send', 'event', 'highscore', score);
+          }
           
           var highscoreName = localStorage['highscore-name'] || "Who are you?";
           
