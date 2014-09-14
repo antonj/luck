@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <!-- Time-stamp: "2014-05-17 21:47:51 antonj" -->
+    <!-- Time-stamp: "2014-09-14 11:16:55 antonj" -->
     <meta charset="UTF-8" />
     <meta name="author" content="Anton Johansson" />
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0" />
@@ -121,18 +121,20 @@
           if (promtHigh && ga !== undefined) {
               ga('send', 'event', 'highscore', score);
           }
-          
-          var highscoreName = localStorage['highscore-name'] || "Who are you?";
+
+          var promtPlaceholder = "Who are you?";
+          var highscoreName = localStorage['highscore-name'] || promtPlaceholder;
           
           if (promtHigh) {
               var highscoreName = prompt("Mr[s] Luck", highscoreName);
+              highscoreName = (highscoreName && highscoreName !== promtPlaceholder) ? highscoreName : 'A modest person';
               localStorage['highscore-name'] = highscoreName;
           }
           
           highscore.innerHTML = score + ' ' + Math.pow(0.5, score)
           localStorage['max-score'] = score;
-          highscore.innerHTML = 'Highestscore: <strong> ' + highscoreName + '</strong><br />record’s <span class="val">' + score + '</span> in a row'
-          + '<br />  it’s like you met <br /> the <span class="val">one</span> true love <br />amoung <span class="val">' + Math.pow(2, score) + '</span> random peeps';
+          highscore.innerHTML = 'Highest score: <strong> ' + highscoreName + '</strong><br />record’s <span class="val">' + score + '</span> in a row'
+          + '<br />  it’s like you met <br /> the <span class="val">one</span> true love <br />among <span class="val">' + Math.pow(2, score) + '</span> random peeps';
           max = score;
           highscore.className = 'highscore new'
           clearTimeout(high_anim_timer);
