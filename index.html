@@ -118,10 +118,6 @@
       function newHigh(score, promtHigh) {
           if (score < 3) return;
 
-          if (promtHigh && ga !== undefined) {
-              ga('send', 'event', 'highscore', score);
-          }
-
           var promtPlaceholder = "Who are you?";
           var highscoreName = localStorage['highscore-name'] || promtPlaceholder;
           
