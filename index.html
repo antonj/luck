@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <!-- Time-stamp: "2014-09-14 11:16:55 antonj" -->
     <meta charset="UTF-8" />
     <meta name="author" content="Anton Johansson" />
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0" />
     <title>LUCK</title>
     <style type="text/css" media="screen">
       html, body {
@@ -192,6 +191,9 @@ console.log(localStorage['highscore-name']);
               case 'touchstart':
                   prob(event)
                   break;
+              case 'touchend':
+              case 'touchmove':
+                  event.preventDefault();
               }
           }
       }
@@ -199,7 +201,10 @@ console.log(localStorage['highscore-name']);
       var ev_start_name = has_touch ? 'touchstart' : 'mousedown';
       left.addEventListener(ev_start_name, events, false);
       right.addEventListener(ev_start_name, events, false);
-      document.body.addEventListener('touchmove', function(e){ e.preventDefault(); });
+      for (const e of ['touchend', 'touchmove']) {
+          left.addEventListener(e, events, false);
+          right.addEventListener(e, events, false);
+      }
     </script>
   </body>
 </html>
